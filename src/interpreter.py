@@ -2,7 +2,15 @@ from parse import parser
 import readline
 
 class Step:
-    def __init__(self, id, step) -> None:
+    """Step 类，用于存储每个步骤的信息
+    """
+    def __init__(self, id: str, step: list) -> None:
+        """Step 类的构造函数
+
+        Args:
+            id (str): Step 的 ID
+            step (list): Step 的内容，由 parser 生成
+        """
         self.id = id
         self.speak = []
         self.listen = ()
@@ -12,7 +20,12 @@ class Step:
         self.exit = False
         self.set_step(step)
 
-    def set_step(self, step):
+    def set_step(self, step: list) -> None:
+        """设置 Step 的内容
+
+        Args:
+            step (list): Step 的内容，由 parser 生成
+        """
         for action in step:
             if action[0] == 'speak':
                 self.speak = action[1]
@@ -28,6 +41,11 @@ class Step:
                 self.exit = True
 
     def __str__(self) -> str:
+        """Step 的字符串表示
+
+        Returns:
+            str: Step 的字符串表示
+        """
         return f'{self.id}\n' + \
             f'speak: {self.speak}\n' + \
             f'listen: {self.listen}\n' + \
@@ -38,7 +56,14 @@ class Step:
 
 
 class Environment:
-    def __init__(self, script_file):
+    """Environment 类，用于存储脚本的信息
+    """
+    def __init__(self, script_file: str) -> None:
+        """Environment 类的构造函数
+
+        Args:
+            script_file (str): 脚本文件的路径
+        """
         self.var_table = {}
         self.step_table = {}
         self.step = None
@@ -48,15 +73,27 @@ class Environment:
             self.make_step_table(self.script)
             self.step = self.step_table['welcome']
 
-    def make_step_table(self, script):
+    def make_step_table(self, script: list) -> None:
+        """生成 Step 表
+
+        Args:
+            script (list): 脚本，由 parser 生成
+        """
         for step in script:
             id = step[0]
             self.step_table[id] = Step(id, step[1])
 
-    def speak(self):
+    def speak(self) -> None:
+        """输出 Step 的 speak 字段
+        """
         print(''.join(self.step.speak))
 
     def listen(self) -> str:
+        """获取用户输入，并返回下一个 Step 的 ID
+
+        Returns:
+            str: 下一个 Step 的 ID
+        """
         if self.step.exit:
             return None
         answer = input()

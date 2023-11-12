@@ -67,7 +67,9 @@ def p_exit(p):
     '''exit : EXIT'''
     p[0] = ('exit', True)
 
+# 错误处理
 def p_error(p):
     print(f"Syntax error in input! {p.lineno}:{p.lexpos} {p.value}")
 
+# 构建语法分析器
 parser = yacc.yacc()

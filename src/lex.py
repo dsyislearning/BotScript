@@ -10,6 +10,7 @@ tokens = [
     'INDENT'
 ]
 
+# 字面量
 literals = ['+', ',']
 
 # 保留字
@@ -64,10 +65,13 @@ def find_column(input,token):
     column = (token.lexpos - last_cr) + 1
     return column
 
+# 忽略的字符
 t_ignore  = ' \t'
 
+# 错误处理
 def t_error(t):
     print("Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
 
+# 构建词法分析器
 lexer = lex.lex()
