@@ -174,6 +174,10 @@ class Environment:
                 else:
                     id_list.append(step.id)
 
+            # 必须有 Step welcome
+            if 'welcome' not in id_list:
+                raise Exception('缺少 Step welcome 作为入口')
+
             # 如果有的话，检查分支的目标是否存在
             for step in self.step_table.values():
                 for key, value in step.answer.items():
