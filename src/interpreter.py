@@ -58,7 +58,7 @@ class Step:
             exit(0)
 
     def check_step(self) -> None:
-        """检查 Step 的语义是否正确
+        """检查 Step 的语义是否正确，并给出错误信息
 
         Raises:
             Exception: speak 字段不存在
@@ -89,7 +89,7 @@ class Step:
             exit(0)
 
     def __str__(self) -> str:
-        """Step 的字符串表示
+        """Step 的字符串表示，用于调试
 
         Returns:
             str: Step 的字符串表示
@@ -123,7 +123,7 @@ class Environment:
             self.check_semantic()
 
     def make_step_table(self, script: list) -> None:
-        """生成 Step 表
+        """生成 Step 表，用于存储每个步骤的信息
 
         Args:
             script (list): 脚本，由 parser 生成
@@ -157,7 +157,7 @@ class Environment:
             return self.step_table[self.step.default]
 
     def check_semantic(self) -> None:
-        """检查脚本的语义是否正确
+        """检查脚本的语义是否正确，并给出错误信息
 
         Raises:
             Exception: Step 的 ID 重复
