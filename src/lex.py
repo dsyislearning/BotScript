@@ -7,11 +7,10 @@ tokens = [
     'STRING',
     'NUMBER',
     'COMMENT',
-    'INDENT'
 ]
 
 # 字面量
-literals = ['+', ',']
+literals = ['+', ',', ':', ';']
 
 # 保留字
 reversed = {
@@ -49,29 +48,18 @@ def t_COMMENT(t):
     r'\#.*'
     pass
 
-def t_INDENT(t):
-    r'\n(\s+)'
-    t.lexer.lineno += 1
-    return t
-
+# 丢弃空行
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
 
-def find_column(input,token):
-    last_cr = input.rfind('\n',0,token.lexpos)
-    if last_cr < 0:
-        last_cr = 0
-    column = (token.lexpos - last_cr) + 1
-    return column
-
-# 忽略的字符
+# 忽略的字符，包括空格和制表符
 t_ignore  = ' \t'
 
 # 错误处理
 def t_error(t):
-    print("Illegal character '%s'" % t.value[0])
-    t.lexer.skip(1)
+    print(f"LexError: lineno {t.lineno} lexpos {t.lexpos}: {t.value[0]}")
+    exit(1)
 
 # 构建词法分析器
 lexer = lex.lex()

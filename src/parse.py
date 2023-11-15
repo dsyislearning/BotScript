@@ -12,16 +12,16 @@ def p_script(p):
         p[0] = [p[1]] + p[2]
 
 def p_step(p):
-    '''step : STEP ID actions'''
-    p[0] = (p[2], p[3])
+    '''step : STEP ID ':' actions'''
+    p[0] = (p[2], p[4])
 
 def p_actions(p):
-    '''actions : INDENT action
-               | INDENT action actions'''
+    '''actions : action ';'
+               | action ';' actions'''
     if len(p) == 3:
-        p[0] = [p[2]]
+        p[0] = [p[1]]
     else:
-        p[0] = [p[2]] + p[3]
+        p[0] = [p[1]] + p[3]
 
 def p_action(p):
     '''action : speak
@@ -69,7 +69,8 @@ def p_exit(p):
 
 # 错误处理
 def p_error(p):
-    print(f"Syntax error in input! {p.lineno}:{p.lexpos} {p.value}")
+    print(f"SyntaxError: lineno {p.lineno} lexpos {p.lexpos}")
+    exit(0)
 
 # 构建语法分析器
 parser = yacc.yacc()
