@@ -1,0 +1,31 @@
+#!/bin/bash
+
+if [ ! -d "./botvenv" ]; then # 如果虚拟环境不存在
+    echo "Virtual environment not found, create one? [Y/n]"
+    read -r answer # 读取回答
+    if [ -z "$answer" ]; then # 如果回答为空
+        answer="Y" # 默认回答是
+    fi
+    if [ "$answer" != "${answer#[Yy]}" ]; then # 如果回答是
+        echo "Creating virtual environment..."
+        python3 -m venv botvenv # 创建虚拟环境
+        source "./botvenv/bin/activate" # 激活虚拟环境
+        if [ ! -f "./requirements.txt" ]; then # 如果依赖文件不存在
+            echo "ERROR: requirements.txt not found!"
+            rm -rf ./botvenv # 删除虚拟环境
+            exit 1
+        else
+            pip install -r ./requirements.txt # 安装依赖
+        fi
+        deactivate # 退出虚拟环境
+    else # 如果回答否
+        echo "WARNING: Please create a virtual environment first!"
+        exit 0
+    fi
+fi
+
+source "./botvenv/bin/activate" # 激活虚拟环境
+
+python3 ./src/main.py $1 # 运行主程序
+
+deactivate # 退出虚拟环境
