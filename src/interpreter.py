@@ -141,7 +141,14 @@ class Environment:
             script_string = ''.join(f.readlines()).lower()
             self.script = parser.parse(script_string)
             self.make_step_table(self.script)
-            self.step = self.step_table['welcome']
+            try:
+                if 'welcome' not in self.step_table:
+                    raise Exception('缺少 Step welcome 作为入口')
+                else:
+                    self.step = self.step_table['welcome']
+            except Exception as e:
+                print('SemanticFault:', e)
+                exit(1)
             self.check_semantic()
 
     def make_step_table(self, script: list) -> None:
@@ -150,9 +157,15 @@ class Environment:
         Args:
             script (list): 脚本，由 parser 生成
         """
-        for step in script:
-            id = step[0]
-            self.step_table[id] = Step(id, step[1])
+        try:
+            for step in script:
+                id = step[0]
+                if id in self.step_table:
+                    raise Exception(f"Step {id} 的 ID 重复")
+                self.step_table[id] = Step(id, step[1])
+        except Exception as e:
+            print('SemanticFault:', e)
+            exit(1)
 
     def speak(self) -> None:
         """输出 Step 的 speak 字段
@@ -185,27 +198,7 @@ class Environment:
             return self.step_table[self.step.default]
 
     def check_semantic(self) -> None:
-        """检查脚本的语义是否正确，并给出错误信息
-
-        Raises:
-            Exception: Step 的 ID 重复
-            Exception: Step 的分支的目标不存在
-            Exception: Step 的 silence 的目标不存在
-            Exception: Step 的 default 的目标不存在
-        """
         try:
-            # 检查 Step 的 ID 是否重复
-            id_list = []
-            for step in self.step_table.values():
-                if step.id in id_list:
-                    raise Exception(f"Step {step.id} ID 重复")
-                else:
-                    id_list.append(step.id)
-
-            # 必须有 Step welcome
-            if 'welcome' not in id_list:
-                raise Exception('缺少 Step welcome 作为入口')
-
             # 如果有的话，检查分支的目标是否存在
             for step in self.step_table.values():
                 for key, value in step.answer.items():
