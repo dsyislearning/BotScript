@@ -1,0 +1,56 @@
+# 测试样例3，电商客服
+
+step welcome:
+    speak "欢迎光临 " + $storename + "，请问有什么可以帮您？";
+    listen 5, 20;
+    branch "发货", ship;
+    branch "快递", delivery;
+    branch "新品", new;
+    silence silenceProc;
+    default defaultProc;
+
+step ship:
+    speak "是否帮您查询最近买的东西何时发货？";
+    listen 5, 20;
+    branch "是", shipyes;
+    branch "否", welcome;
+    silence silenceProc;
+    default ship;
+
+step shipyes:
+    speak "发货时间为 " + $shiptime;
+    exit;
+
+step delivery:
+    speak "是否帮您查询最近的快递信息？";
+    listen 5, 20;
+    branch "是", deliveryyes;
+    branch "否", welcome;
+    silence silenceProc;
+    default delivery;
+
+step deliveryyes:
+    speak "快递情况：" + $deliveryinfo;
+    exit;
+
+step new:
+    speak "我们最近有如下新品：" + $newproducts;
+    exit;
+
+step silenceProc:
+    speak "听不清，请您再说一遍";
+    listen 5, 20;
+    branch "发货", ship;
+    branch "快递", delivery;
+    branch "新品", new;
+    silence silenceProc;
+    default defaultProc;
+
+step defaultProc:
+    speak "你可以向我：查询发货情况 or 查询快递情况 or 查看我们的新品";
+    listen 5, 20;
+    branch "发货", ship;
+    branch "快递", delivery;
+    branch "新品", new;
+    silence silenceProc;
+    default defaultProc;
