@@ -1,6 +1,6 @@
 import ply.yacc as yacc
 
-from lex import tokens
+from lex import tokens, lexer
 
 # 语法分析规则
 def p_script(p):
@@ -38,14 +38,19 @@ def p_speak(p):
 
 def p_string(p):
     '''string : STRING
+              | VAR
               | STRING '+' string
               | VAR '+' string'''
     if len(p) == 2:
-        p[0] = [p[1][1:-1]]
-    elif p[1][0] == '$':
-        p[0] = [p[1]] + p[3]
+        if p[1][0] == '$':
+            p[0] = [p[1]]
+        else:
+            p[0] = [p[1][1:-1]]
     else:
-        p[0] = [p[1][1:-1]] + p[3] # 去掉引号
+        if p[1][0] == '$':
+            p[0] = [p[1]] + p[3]
+        else:
+            p[0] = [p[1][1:-1]] + p[3] # 去掉引号
 
 def p_listen(p):
     '''listen : LISTEN NUMBER ',' NUMBER'''
@@ -70,7 +75,7 @@ def p_exit(p):
 # 错误处理
 def p_error(p):
     print(f"SyntaxError: lineno {p.lineno} lexpos {p.lexpos}")
-    exit(0)
+    exit(1)
 
 # 构建语法分析器
 parser = yacc.yacc()

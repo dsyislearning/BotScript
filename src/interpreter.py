@@ -55,7 +55,7 @@ class Step:
                     self.exit = True
         except Exception as e:
             print('SemanticFault:', e)
-            exit(0)
+            exit(1)
 
     def check_step(self) -> None:
         """检查 Step 的语义是否正确，并给出错误信息
@@ -86,7 +86,7 @@ class Step:
                     raise Exception(f"Step {self.id} 的 listen 起始时间大于终止时间")
         except Exception as e:
             print('SemanticFault:', e)
-            exit(0)
+            exit(1)
 
     def __str__(self) -> str:
         """Step 的字符串表示，用于调试
@@ -145,12 +145,18 @@ class Environment:
         """
         if self.step.exit:
             return None
-        answer = input()
+
+        if self.step.listen:
+            answer = input()
+        else:
+            answer = ''
+
         for key, value in self.step.answer.items():
             if not answer:
                 break
             elif key in answer:
                 return self.step_table[value]
+
         if not answer:
             return self.step_table[self.step.silence]
         else:
@@ -192,4 +198,4 @@ class Environment:
                     raise Exception(f"Step {step.id} 的 default 目标 {step.default} 不存在")
         except Exception as e:
             print('SemanticFault:', e)
-            exit(0)
+            exit(1)
