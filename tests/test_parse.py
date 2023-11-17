@@ -172,14 +172,12 @@ def test_parse_2():
 def test_parse_error_0(capsys):
     lexer.lineno = 1
     with pytest.raises(SystemExit) as e:
-        with capsys.disabled():
-            parser.parse("""step welcome
-                            speak "您好,请问有什么可以帮您?";""")
-        captured = capsys.readouterr()
-        assert captured.out == 'SyntaxError: lineno 2 lexpos 41\n'
-    assert e.type == SystemExit
+        parser.parse("""step welcome
+                        speak "您好,请问有什么可以帮您?";""")
     assert e.value.code == 1
     lexer.lineno = 1
+    captured = capsys.readouterr()
+    assert captured.out == 'SyntaxError: lineno 2 lexpos 37\n'
 
 # 动作定义缺少分号
 def test_parse_error_1(capsys):

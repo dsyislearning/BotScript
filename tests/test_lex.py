@@ -30,14 +30,12 @@ def test_lex_error_0(capsys):
     lexer.input('!')
 
     with pytest.raises(SystemExit) as e:
-        with capsys.disabled():
-                token = lexer.token()
-                while token:
-                    token = lexer.token()
-        captured = capsys.readouterr()
-        assert captured.out == 'LexError: lineno 1 lexpos 0: !\n'
-    assert e.type == SystemExit
+        token = lexer.token()
+        while token:
+            token = lexer.token()
     assert e.value.code == 1
+    captured = capsys.readouterr()
+    assert captured.out == 'LexError: lineno 1 lexpos 0: !\n'
 
     lexer.lineno = 1
 
@@ -46,14 +44,12 @@ def test_lex_error_1(capsys):
     lexer.input('step buhe &')
 
     with pytest.raises(SystemExit) as e:
-        with capsys.disabled():
-                token = lexer.token()
-                while token:
-                    token = lexer.token()
-        captured = capsys.readouterr()
-        assert captured.out == 'LexError: lineno 1 lexpos 10: &\n'
-    assert e.type == SystemExit
+        token = lexer.token()
+        while token:
+            token = lexer.token()
     assert e.value.code == 1
+    captured = capsys.readouterr()
+    assert captured.out == 'LexError: lineno 1 lexpos 10: &\n'
 
     lexer.lineno = 1
 
@@ -62,13 +58,11 @@ def test_lex_error_2(capsys):
     lexer.input('step buhe \n &n')
 
     with pytest.raises(SystemExit) as e:
-        with capsys.disabled():
-                token = lexer.token()
-                while token:
-                    token = lexer.token()
-        captured = capsys.readouterr()
-        assert captured.out == 'LexError: lineno 1 lexpos 12: &\n'
-    assert e.type == SystemExit
+        token = lexer.token()
+        while token:
+            token = lexer.token()
     assert e.value.code == 1
+    captured = capsys.readouterr()
+    assert captured.out == 'LexError: lineno 2 lexpos 12: &\n'
 
     lexer.lineno = 1
