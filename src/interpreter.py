@@ -17,7 +17,7 @@ class Step:
         self.answer = {}
         self.silence = ''
         self.default = ''
-        self.exit = False
+        self.exit = None
         self.set_step(step)
         self.check_step()
 
@@ -52,7 +52,10 @@ class Step:
                     else:
                         raise Exception(f"Step {self.id} 的 default 字段有多个") # 每个 Step 只能有一个 default 字段
                 elif action[0] == 'exit':
-                    self.exit = True
+                    if self.exit == None:
+                        self.exit = True
+                    else:
+                        raise Exception(f"Step {self.id} 的 exit 字段有多个") # 每个 Step 只能有一个 exit 字段
         except Exception as e:
             print('SemanticFault:', e)
             exit(1)
@@ -101,6 +104,25 @@ class Step:
             f'silence: {self.silence}\n' + \
             f'default: {self.default}\n' + \
             f'exit: {self.exit}\n'
+    
+    def __eq__(self, __value: object) -> bool:
+        """Step 的相等比较
+
+        Args:
+            __value (object): 要比较的对象
+
+        Returns:
+            bool: 相等返回 True，否则返回 False
+        """
+        if not isinstance(__value, Step):
+            return False
+        return self.id == __value.id and \
+            self.speak == __value.speak and \
+            self.listen == __value.listen and \
+            self.answer == __value.answer and \
+            self.silence == __value.silence and \
+            self.default == __value.default and \
+            self.exit == __value.exit
 
 
 class Environment:
