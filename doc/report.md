@@ -495,35 +495,99 @@ ERROR: requirements.txt not found!
 
 ## 4 测试
 
+本项目使用 `pytest` 进行测试，具有自动测试的功能
+
 ### 测试桩
 
 #### 词法分析功能测试
 
+对词法分析模块 `lex.py` 的测试模块为 `test_lex.py` ，其中的测试函数如下：
 
+##### 对所有标记的识别
 
+- 测试函数 `test_tokens` ：验证词法分析器能够识别所有规定的标识
 
+##### 对非法标记的错误处理
+
+- 测试函数 `test_lex_error_0` ：非法字符错误提示
+
+- 测试函数 `test_lex_error_1` ：非法字符错误提示
+
+- 测试函数 `test_lex_error_2` ：非法字符错误提示
 
 #### 语法分析功能测试
 
+对语法分析模块 `parse.py` 的测试模块为 `test_parse.py` ，其中的测试函数如下：
 
+##### 对生成的语法树正确性进行检查
+
+- 辅助函数 `check` ：第一个参数为待测试的文件名，第二个参数为答案对象，使用 `assert` 判断生成的语法树与答案是否相等
+
+- 测试函数 `test_parse_0` ：以 `test1.bs` 为测试文件进行测试
+- 测试函数 `test_parse_1` ：以 `test2.bs` 为测试文件进行测试
+- 测试函数 `test_parse_2` ：以 `test2.bs` 为测试文件进行测试
+
+##### 对语法错误的检查
+
+- 测试函数 `test_parse_error_0` ：步骤定义缺少冒号
+- 测试函数 `test_parse_error_1` ：动作定义缺少分号
+- 测试函数 `test_parse_error_2` ：动作定义缺少逗号
+- 测试函数 `test_parse_error_3` ：speak 语法检查
+- 测试函数 `test_parse_error_4` ：listen 语法检查
+- 测试函数 `test_parse_error_5` ：branch 语法检查
+- 测试函数 `test_parse_error_6` ：silence 语法检查
+- 测试函数 `test_parse_error_7` ：default 语法检查
 
 #### 语义分析功能测试
 
+##### 对生成的执行环境与步骤对象的正确性检查
 
+- `steps` 列表，存有测试 Step 类时正确的对象，以供测试 Environment 类时使用
 
+###### 测试 Step 类
 
+- 测试函数 `test_step_0` ：测试 `test1.bs` 中由产生语法树生成的步骤 Step 对象
+- 测试函数 `test_step_1` ：测试 `test2.bs` 中由产生语法树生成的步骤 Step 对象
+- 测试函数 `test_step_2` ：测试 `test3.bs` 中由产生语法树生成的步骤 Step 对象
 
-#### 机器人交互应答功能测试
+###### 测试 Environment 类
 
+- 测试函数 `test_environment_0` ：测试 `test1.bs` 中由产生语法树生成的步骤 Environment 对象
+- 测试函数 `test_environmentp_1` ：测试 `test2.bs` 中由产生语法树生成的步骤 Environment 对象
+- 测试函数 `test_environment_2` ：测试 `test3.bs` 中由产生语法树生成的步骤 Environment 对象
 
+##### 对语义错误的检查与错误提示
 
+###### 对单个步骤内的语义检查
 
+- 测试函数 `test_step_error_0` ：测试一个步骤内有多个 speak 动作的错误提示
+- 测试函数 `test_step_error_1` ：测试一个步骤内有多个 listen 动作的错误提示
+- 测试函数 `test_step_error_2` ：测试一个步骤内有多个 default 动作的错误提示
+- 测试函数 `test_step_error_3` ：测试一个步骤内有多个 exit 动作的错误提示
+- 测试函数 `test_step_error_4` ：测试一个步骤内缺少 speak 动作的错误提示
+- 测试函数 `test_step_error_5` ：测试一个步骤内有 exit 但还有其他动作
+- 测试函数 `test_step_error_6` ：测试一个步骤内 listen 起止时间的正确性
+
+###### 对整个脚本的语义检查
+
+- 测试函数 `test_environment_error_0` ：检查 step 的 ID 是否重复，使用 `testbad1.bs` 作为测试文件
+- 测试函数 `test_environment_error_1` ：检查是否缺少名为 welcome 的入口步骤，使用 `testbad2.bs` 作为测试文件
+- 测试函数 `test_environment_error_2` ：检查是否有不存在的分支，使用 `testbad3.bs` 作为测试文件
+- 测试函数 `test_environment_error_3` ：检查是否有不存在的 silence 目标步骤，使用 `testbad4.bs` 作为测试文件
+- 测试函数 `test_environment_error_4` ：检查是否有不存在的 default 目标步骤，使用 `testbad5.bs` 作为测试文件
 
 ### 自动测试脚本
 
+使用 pytest 自动化模块的单元测试：
 
+```zsh
+# dsy @ arch in ~/Code/BotScript/tests on git:main x botvenv [1:31:24] 
+$ pytest -v
+```
 
+可以看到所有测试结果：
 
+![test result](./img/test_result.png)
 
 
 ## 5 记法
@@ -761,7 +825,8 @@ exit;
 - 如果一个步骤结束后需要退出，即含有 `exit` ，则不能有除 `speak` 外的其他动作
 - 一个步骤里可以没有 `listen` 动作或者只有一个 `listen` 动作
 - `listen` 动作的时间必须大于零且起始时间小于等于终止时间
-- 一个步骤里可以没有或有多个 `branch` 动作
-- 一个步骤里可以没有或者只有一个 `silence` 动作
-- 一个步骤里可以没有或者只有一个 `default` 动作
+- 如果没有 `listen` 动作，则下一步动作由 `silence` 决定
+- 一个步骤里可以没有或有若干个 `branch` 动作
+- 一个步骤里可以没有或有且只有一个 `silence` 动作
+- 一个步骤里可以没有或有且只有一个 `default` 动作
 - 不能出现未定义的步骤
