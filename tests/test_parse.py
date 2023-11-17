@@ -185,103 +185,89 @@ def test_parse_error_0(capsys):
 def test_parse_error_1(capsys):
     lexer.lineno = 1
     with pytest.raises(SystemExit) as e:
-        with capsys.disabled():
-            parser.parse("""step welcome
-                                speak "您好,请问有什么可以帮您?"
-                                listen 5, 20  """)
-        captured = capsys.readouterr()
-        assert captured.out == 'SyntaxError: lineno 2 lexpos 45\n'
-    assert e.type == SystemExit
+        parser.parse("""step welcome
+                            speak "您好,请问有什么可以帮您?"
+                            listen 5, 20  """)
     assert e.value.code == 1
     lexer.lineno = 1
+    captured = capsys.readouterr()
+    assert captured.out == 'SyntaxError: lineno 2 lexpos 41\n'
 
 # 动作定义缺少逗号
 def test_parse_error_2(capsys):
     lexer.lineno = 1
     with pytest.raises(SystemExit) as e:
-        with capsys.disabled():
-            parser.parse("""step welcome:
-                                speak "您好,请问有什么可以帮您?";
-                                listen 5, 20;
-                                branch "投诉" complainproc;""")
-        captured = capsys.readouterr()
-        assert captured.out == 'SyntaxError: lineno 4 lexpos 159\n'
-    assert e.type == SystemExit
+        parser.parse("""step welcome:
+                            speak "您好,请问有什么可以帮您?";
+                            listen 5, 20;
+                            branch "投诉" complainproc;""")
     assert e.value.code == 1
     lexer.lineno = 1
+    captured = capsys.readouterr()
+    assert captured.out == 'SyntaxError: lineno 4 lexpos 147\n'
 
 # speak 语法检查
 def test_parse_error_3(capsys):
     lexer.lineno = 1
     with pytest.raises(SystemExit) as e:
-        with capsys.disabled():
-            parser.parse("""step welcome:
-                                speak $name, "您好,请问有什么可以帮您?";""")
-        captured = capsys.readouterr()
-        assert captured.out == 'SyntaxError: lineno 4 lexpos 57\n'
-    assert e.type == SystemExit
+        parser.parse("""step welcome:
+                        speak $name, "您好,请问有什么可以帮您?";""")
     assert e.value.code == 1
     lexer.lineno = 1
+    captured = capsys.readouterr()
+    assert captured.out == 'SyntaxError: lineno 2 lexpos 49\n'
 
 # listen 语法检查
 def test_parse_error_4(capsys):
     lexer.lineno = 1
     with pytest.raises(SystemExit) as e:
-        with capsys.disabled():
-            parser.parse("""step welcome:
-                                speak $name + "您好,请问有什么可以帮您?";
-                                listen 5 20;""")
-        captured = capsys.readouterr()
-        assert captured.out == 'SyntaxError: lineno 3 lexpos 118\n'
-    assert e.type == SystemExit
+        parser.parse("""step welcome:
+                        speak $name + "您好,请问有什么可以帮您?";
+                        listen 5 20;""")
     assert e.value.code == 1
     lexer.lineno = 1
+    captured = capsys.readouterr()
+    assert captured.out == 'SyntaxError: lineno 3 lexpos 102\n'
 
 # branch 语法检查
 def test_parse_error_5(capsys):
     lexer.lineno = 1
     with pytest.raises(SystemExit) as e:
-        with capsys.disabled():
-            parser.parse("""step welcome:
-                                speak $name + "您好,请问有什么可以帮您?";
-                                listen 5, 20;
-                                branch "投诉", complainproc,
-                                branch "账单", billproc;""")
-        captured = capsys.readouterr()
-        assert captured.out == 'SyntaxError: lineno 4 lexpos 180\n'
-    assert e.type == SystemExit
+        parser.parse("""step welcome:
+                        speak $name + "您好,请问有什么可以帮您?";
+                        listen 5, 20;
+                        branch "投诉", complainproc,
+                        branch "账单", billproc;""")
     assert e.value.code == 1
     lexer.lineno = 1
+    captured = capsys.readouterr()
+    assert captured.out == 'SyntaxError: lineno 4 lexpos 156\n'
 
 # silence 语法检查
 def test_parse_error_6(capsys):
     lexer.lineno = 1
     with pytest.raises(SystemExit) as e:
-        with capsys.disabled():
-            parser.parse("""step welcome:
-                                speak $name + "您好,请问有什么可以帮您?";
-                                listen 5, 20;
-                                branch "投诉", complainproc;
-                                silence silence;""")
-        captured = capsys.readouterr()
-        assert captured.out == 'SyntaxError: lineno 5 lexpos 222\n'
-    assert e.type == SystemExit
+        parser.parse("""step welcome:
+                        speak $name + "您好,请问有什么可以帮您?";
+                        listen 5, 20;
+                        branch "投诉", complainproc;
+                        silence silence;""")
     assert e.value.code == 1
     lexer.lineno = 1
+    captured = capsys.readouterr()
+    assert captured.out == 'SyntaxError: lineno 5 lexpos 190\n'
 
 # default 语法检查
 def test_parse_error_7(capsys):
     lexer.lineno = 1
     with pytest.raises(SystemExit) as e:
-        with capsys.disabled():
-            parser.parse("""step welcome:
-                                speak $name + "您好,请问有什么可以帮您?";
-                                listen 5, 20;
-                                branch "投诉", complainproc;
-                                silence silenceproc;
-                                default default;""")
-        captured = capsys.readouterr()
-        assert captured.out == 'SyntaxError: lineno 6 lexpos 275\n'
-    assert e.type == SystemExit
+        parser.parse("""step welcome:
+                        speak $name + "您好,请问有什么可以帮您?";
+                        listen 5, 20;
+                        branch "投诉", complainproc;
+                        silence silenceproc;
+                        default default;""")
     assert e.value.code == 1
     lexer.lineno = 1
+    captured = capsys.readouterr()
+    assert captured.out == 'SyntaxError: lineno 6 lexpos 235\n'
