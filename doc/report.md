@@ -189,11 +189,9 @@ self.exit = False
 
 即本项目 `README.md`
 
-#### 自动生成项目文档
+#### 自动生成项目API文档
 
-使用 Sphinx 模块
-
-
+使用 Sphinx 模块和 `sphinx-autoapi` 插件根据文档字符串自动生成项目文档 `doc/build/index.html`
 
 #### 测试文档
 
@@ -553,7 +551,7 @@ ERROR: requirements.txt not found!
 ###### 测试 Environment 类
 
 - 测试函数 `test_environment_0` ：测试 `test1.bs` 中由产生语法树生成的步骤 Environment 对象
-- 测试函数 `test_environmentp_1` ：测试 `test2.bs` 中由产生语法树生成的步骤 Environment 对象
+- 测试函数 `test_environment_1` ：测试 `test2.bs` 中由产生语法树生成的步骤 Environment 对象
 - 测试函数 `test_environment_2` ：测试 `test3.bs` 中由产生语法树生成的步骤 Environment 对象
 
 ##### 对语义错误的检查与错误提示
