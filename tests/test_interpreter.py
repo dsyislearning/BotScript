@@ -1,3 +1,4 @@
+"""解释器测试模块"""
 import sys
 sys.path.append('../src')
 
@@ -6,8 +7,13 @@ import pytest
 from interpreter import Step, Environment
 
 steps = []
+"""list: Step 对象列表
+
+存有测试 Step 类时正确的对象，以供测试 Environment 类时使用"""
 
 def test_step_0():
+    """测试 `test1.bs` 中由产生语法树生成的步骤 Step 对象
+    """
     step = Step('welcome', [
             ('speak', ['$name', '您好,请问有什么可以帮您?']),
             ('listen', (5, 20)),
@@ -100,6 +106,7 @@ def test_step_0():
     assert step.exit == None
 
 def test_step_1():
+    """测试 `test2.bs` 中由产生语法树生成的步骤 Step 对象"""
     step = Step('welcome', [
             ('speak', ['我是心里咨熊师完颜慧德，你有什么要问的吗？']),
             ('listen', (5, 20)),
@@ -232,6 +239,7 @@ def test_step_1():
     assert step.exit == True
 
 def test_step_2():
+    """测试 `test3.bs` 中由产生语法树生成的步骤 Step 对象"""
     step = Step('welcome', [
             ('speak', ['欢迎光临 ', '$storename', '，请问有什么可以帮您？']),
             ('listen', (5, 20)),
@@ -360,6 +368,7 @@ def test_step_2():
     assert step.exit == None
 
 def test_environment_0():
+    """测试 `test1.bs` 中由产生语法树生成的步骤 Environment 对象"""
     step_table = {
         'welcome': steps.pop(0),
         'complainproc': steps.pop(0),
@@ -374,6 +383,7 @@ def test_environment_0():
     assert env.step == env.step_table['welcome']
 
 def test_environment_1():
+    """测试 `test2.bs` 中由产生语法树生成的步骤 Environment 对象"""
     step_table = {
         'welcome': steps.pop(0),
         'continue': steps.pop(0),
@@ -391,6 +401,7 @@ def test_environment_1():
     assert env.step == env.step_table['welcome']
 
 def test_environment_2():
+    """测试 `test3.bs` 中由产生语法树生成的步骤 Environment 对象"""
     step_table = {
         'welcome': steps.pop(0),
         'ship': steps.pop(0),
@@ -407,6 +418,7 @@ def test_environment_2():
     assert env.step == env.step_table['welcome']
 
 def test_step_error_0(capsys):
+    """测试一个步骤内有多个 speak 动作的错误提示"""
     with pytest.raises(SystemExit) as e:
         step = Step('welcome', [
             ('speak', ['您好,请问有什么可以帮您?']),
@@ -423,6 +435,7 @@ def test_step_error_0(capsys):
     assert captured.out == 'SemanticFault: Step welcome 的 speak 字段有多个\n'
 
 def test_step_error_1(capsys):
+    """测试一个步骤内有多个 listen 动作的错误提示"""
     with pytest.raises(SystemExit) as e:
         step = Step('welcome', [
             ('speak', ['您好,请问有什么可以帮您?']),
@@ -439,6 +452,7 @@ def test_step_error_1(capsys):
     assert captured.out == 'SemanticFault: Step welcome 的 listen 字段有多个\n'
 
 def test_step_error_2(capsys):
+    """测试一个步骤内有多个 default 动作的错误提示"""
     with pytest.raises(SystemExit) as e:
         step = Step('welcome', [
             ('speak', ['您好,请问有什么可以帮您?']),
@@ -455,6 +469,7 @@ def test_step_error_2(capsys):
     assert captured.out == 'SemanticFault: Step welcome 的 default 字段有多个\n'
 
 def test_step_error_3(capsys):
+    """测试一个步骤内有多个 exit 动作的错误提示"""
     with pytest.raises(SystemExit) as e:
         step = Step('welcome', [
             ('speak', ['您好,请问有什么可以帮您?']),
@@ -471,6 +486,7 @@ def test_step_error_3(capsys):
     assert captured.out == 'SemanticFault: Step welcome 的 exit 字段有多个\n'
 
 def test_step_error_4(capsys):
+    """测试一个步骤内缺少 speak 动作的错误提示"""
     with pytest.raises(SystemExit) as e:
         step = Step('welcome', [
             ('listen', (5, 20)),
@@ -485,6 +501,7 @@ def test_step_error_4(capsys):
     assert captured.out == 'SemanticFault: Step welcome 的 speak 字段不存在\n'
 
 def test_step_error_5(capsys):
+    """测试一个步骤内有 exit 但还有其他动作"""
     with pytest.raises(SystemExit) as e:
         step = Step('welcome', [
             ('speak', ['您好,请问有什么可以帮您?']),
@@ -500,6 +517,7 @@ def test_step_error_5(capsys):
     assert captured.out == 'SemanticFault: Step welcome 是 exit 步骤，但是含有其他动作\n'
 
 def test_step_error_6(capsys):
+    """测试一个步骤内 listen 起止时间的正确性"""
     with pytest.raises(SystemExit) as e:
         step = Step('welcome', [
             ('speak', ['您好,请问有什么可以帮您?']),
@@ -540,6 +558,7 @@ def test_step_error_6(capsys):
     assert captured.out == 'SemanticFault: Step welcome 的 listen 起始时间大于终止时间\n'
 
 def test_environment_error_0(capsys):
+    """检查 step 的 ID 是否重复，使用 `testbad1.bs` 作为测试文件"""
     with pytest.raises(SystemExit) as e:
         env = Environment('testbad1.bs')
     assert e.value.code == 1
@@ -547,6 +566,7 @@ def test_environment_error_0(capsys):
     assert captured.out == 'SemanticFault: Step thanks 的 ID 重复\n'
 
 def test_environment_error_1(capsys):
+    """检查是否缺少名为 welcome 的入口步骤，使用 `testbad2.bs` 作为测试文件"""
     with pytest.raises(SystemExit) as e:
         env = Environment('testbad2.bs')
     assert e.value.code == 1
@@ -554,6 +574,7 @@ def test_environment_error_1(capsys):
     assert captured.out == 'SemanticFault: 缺少 Step welcome 作为入口\n'
 
 def test_environment_error_2(capsys):
+    """检查是否有不存在的分支，使用 `testbad3.bs` 作为测试文件"""
     with pytest.raises(SystemExit) as e:
         env = Environment('testbad3.bs')
     assert e.value.code == 1
@@ -561,6 +582,7 @@ def test_environment_error_2(capsys):
     assert captured.out == 'SemanticFault: Step welcome 的分支 咨询 的目标 consultproc 不存在\n'
 
 def test_environment_error_3(capsys):
+    """检查是否有不存在的 silence 目标步骤，使用 `testbad4.bs` 作为测试文件"""
     with pytest.raises(SystemExit) as e:
         env = Environment('testbad4.bs')
     assert e.value.code == 1
@@ -568,6 +590,7 @@ def test_environment_error_3(capsys):
     assert captured.out == 'SemanticFault: Step welcome 的 silence 目标 silenceproc 不存在\n'
 
 def test_environment_error_4(capsys):
+    """检查是否有不存在的 default 目标步骤，使用 `testbad5.bs` 作为测试文件"""
     with pytest.raises(SystemExit) as e:
         env = Environment('testbad5.bs')
     assert e.value.code == 1

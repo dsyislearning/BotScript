@@ -1,3 +1,4 @@
+"""语法分析器测试模块"""
 import sys
 sys.path.append('../src')
 
@@ -5,13 +6,20 @@ import pytest
 
 from parse import parser, lexer
 
-def check(filename, answer):
+def check(filename: str, answer: list) -> None:
+    """检查语法分析器输出的结果是否正确
+
+    Args:
+        filename (str): 要检查的文件名
+        answer (list): 正确的结果
+    """
     with open(filename, 'r', encoding='utf-8') as f:
         script_string = ''.join(f.readlines()).lower()
         script = parser.parse(script_string)
         assert script == answer
 
 def test_parse_0():
+    """以 `test1.bs` 为测试文件进行测试"""
     answer = [
         ('welcome', [
             ('speak', ['$name', '您好,请问有什么可以帮您?']),
@@ -54,6 +62,7 @@ def test_parse_0():
     check('test1.bs', answer)
 
 def test_parse_1():
+    """以 `test2.bs` 为测试文件进行测试"""
     answer = [
         ('welcome', [
             ('speak', ['我是心里咨熊师完颜慧德，你有什么要问的吗？']),
@@ -109,6 +118,7 @@ def test_parse_1():
     check('test2.bs', answer)
 
 def test_parse_2():
+    """以 `test2.bs` 为测试文件进行测试"""
     answer = [
         ('welcome', [
             ('speak', ['欢迎光临 ', '$storename', '，请问有什么可以帮您？']),
@@ -168,8 +178,8 @@ def test_parse_2():
     ]
     check('test3.bs', answer)
 
-# 步骤定义缺少冒号
 def test_parse_error_0(capsys):
+    """步骤定义缺少冒号"""
     lexer.lineno = 1
     with pytest.raises(SystemExit) as e:
         parser.parse("""step welcome
@@ -179,8 +189,8 @@ def test_parse_error_0(capsys):
     captured = capsys.readouterr()
     assert captured.out == 'SyntaxError: lineno 2 lexpos 37\n'
 
-# 动作定义缺少分号
 def test_parse_error_1(capsys):
+    """动作定义缺少分号"""
     lexer.lineno = 1
     with pytest.raises(SystemExit) as e:
         parser.parse("""step welcome
@@ -191,8 +201,8 @@ def test_parse_error_1(capsys):
     captured = capsys.readouterr()
     assert captured.out == 'SyntaxError: lineno 2 lexpos 41\n'
 
-# 动作定义缺少逗号
 def test_parse_error_2(capsys):
+    """动作定义缺少逗号"""
     lexer.lineno = 1
     with pytest.raises(SystemExit) as e:
         parser.parse("""step welcome:
@@ -204,8 +214,8 @@ def test_parse_error_2(capsys):
     captured = capsys.readouterr()
     assert captured.out == 'SyntaxError: lineno 4 lexpos 147\n'
 
-# speak 语法检查
 def test_parse_error_3(capsys):
+    """speak 语法检查"""
     lexer.lineno = 1
     with pytest.raises(SystemExit) as e:
         parser.parse("""step welcome:
@@ -215,8 +225,8 @@ def test_parse_error_3(capsys):
     captured = capsys.readouterr()
     assert captured.out == 'SyntaxError: lineno 2 lexpos 49\n'
 
-# listen 语法检查
 def test_parse_error_4(capsys):
+    """listen 语法检查"""
     lexer.lineno = 1
     with pytest.raises(SystemExit) as e:
         parser.parse("""step welcome:
@@ -227,8 +237,8 @@ def test_parse_error_4(capsys):
     captured = capsys.readouterr()
     assert captured.out == 'SyntaxError: lineno 3 lexpos 102\n'
 
-# branch 语法检查
 def test_parse_error_5(capsys):
+    """branch 语法检查"""
     lexer.lineno = 1
     with pytest.raises(SystemExit) as e:
         parser.parse("""step welcome:
@@ -241,8 +251,8 @@ def test_parse_error_5(capsys):
     captured = capsys.readouterr()
     assert captured.out == 'SyntaxError: lineno 4 lexpos 156\n'
 
-# silence 语法检查
 def test_parse_error_6(capsys):
+    """silence 语法检查"""
     lexer.lineno = 1
     with pytest.raises(SystemExit) as e:
         parser.parse("""step welcome:
@@ -255,8 +265,8 @@ def test_parse_error_6(capsys):
     captured = capsys.readouterr()
     assert captured.out == 'SyntaxError: lineno 5 lexpos 190\n'
 
-# default 语法检查
 def test_parse_error_7(capsys):
+    """default 语法检查"""
     lexer.lineno = 1
     with pytest.raises(SystemExit) as e:
         parser.parse("""step welcome:

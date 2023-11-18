@@ -1,15 +1,33 @@
+"""解释器模块"""
 from parse import parser
 import readline
 
 class Step:
     """Step 类，用于存储每个步骤的信息
+
+    Attributes:
+        id (str): Step 的 ID
+        speak (list): Step 的 speak 字段
+        listen (tuple): Step 的 listen 字段
+        answer (dict): Step 的 branch 字段
+        silence (str): Step 的 silence 字段
+        default (str): Step 的 default 字段
+        exit (bool): Step 的 exit 字段
     """
     def __init__(self, id: str, step: list) -> None:
-        """Step 类的构造函数
+        """Step 类的构造函数，初始化 Step 的 ID 和内容，并调用 check_step 检查语义，给出错误信息
 
         Args:
             id (str): Step 的 ID
             step (list): Step 的内容，由 parser 生成
+        
+        Raises:
+            Exception: Step 的 speak 字段有多个
+            Exception: Step 的 listen 字段有多个
+            Exception: Step 的 branch 字段有多个
+            Exception: Step 的 silence 字段有多个
+            Exception: Step 的 default 字段有多个
+            Exception: Step 的 exit 字段有多个
         """
         self.id = id
         self.speak = []
@@ -22,10 +40,17 @@ class Step:
         self.check_step()
 
     def set_step(self, step: list) -> None:
-        """设置 Step 的内容
+        """设置 Step 的内容，包括 speak、listen、branch、silence、default 和 exit 字段，并检查语义，给出错误信息
 
         Args:
             step (list): Step 的内容，由 parser 生成
+
+        Raises:
+            Exception: Step 的 speak 字段有多个
+            Exception: Step 的 listen 字段有多个
+            Exception: Step 的 silence 字段有多个
+            Exception: Step 的 default 字段有多个
+            Exception: Step 的 exit 字段有多个
         """
         try:
             for action in step:
@@ -61,10 +86,10 @@ class Step:
             exit(1)
 
     def check_step(self) -> None:
-        """检查 Step 的语义是否正确，并给出错误信息
+        """检查 Step 的语义，给出错误信息
 
         Raises:
-            Exception: speak 字段不存在
+            Exception: Step 没有 speak 字段
             Exception: Step 是 exit 步骤，但是含有其他动作
             Exception: Step 的 listen 起始时间小于 0
             Exception: Step 的 listen 终止时间小于 0
@@ -127,12 +152,20 @@ class Step:
 
 class Environment:
     """Environment 类，用于存储脚本的信息
+
+    Attributes:
+        var_table (dict): 变量表，用于存储变量的值
+        step_table (dict): Step 表，用于存储每个步骤的信息
+        step (Step): 当前 Step
     """
     def __init__(self, script_file: str) -> None:
-        """Environment 类的构造函数
+        """Environment 类的构造函数，初始化变量表和 Step 表，并调用 make_step_table 生成 Step 表
 
         Args:
-            script_file (str): 脚本文件的路径
+            script_file (str): 脚本文件路径，由 main.py 传入
+
+        Raises:
+            Exception: 缺少 Step welcome 作为入口
         """
         self.var_table = {}
         self.step_table = {}
@@ -156,6 +189,9 @@ class Environment:
 
         Args:
             script (list): 脚本，由 parser 生成
+
+        Raises:
+            Exception: Step 的 ID 重复
         """
         try:
             for step in script:
@@ -168,7 +204,7 @@ class Environment:
             exit(1)
 
     def speak(self) -> None:
-        """输出 Step 的 speak 字段
+        """输出当前 Step 的 speak 字段，机器人的说话内容
         """
         print(''.join(self.step.speak))
 
@@ -198,6 +234,13 @@ class Environment:
             return self.step_table[self.step.default]
 
     def check_semantic(self) -> None:
+        """检查脚本的语义，给出错误信息
+
+        Raises:
+            Exception: Step 的分支的目标不存在
+            Exception: Step 的 silence 的目标不存在
+            Exception: Step 的 default 的目标不存在
+        """
         try:
             # 如果有的话，检查分支的目标是否存在
             for step in self.step_table.values():

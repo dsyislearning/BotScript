@@ -1,3 +1,4 @@
+"""词法分析器测试模块"""
 import sys
 sys.path.append('../src')
 
@@ -6,6 +7,7 @@ import pytest
 from lex import lexer
 
 def test_tokens():
+    """验证词法分析器能够识别所有规定的标识"""
     lexer.lineno = 1
     lexer.input('''
         step speak listen branch silence default exit
@@ -26,6 +28,7 @@ def test_tokens():
     lexer.lineno = 1
 
 def test_lex_error_0(capsys):
+    """非法字符错误提示测试"""
     lexer.lineno = 1
     lexer.input('!')
 
@@ -40,6 +43,7 @@ def test_lex_error_0(capsys):
     lexer.lineno = 1
 
 def test_lex_error_1(capsys):
+    """非法字符错误提示测试"""
     lexer.lineno = 1
     lexer.input('step buhe &')
 
@@ -54,6 +58,7 @@ def test_lex_error_1(capsys):
     lexer.lineno = 1
 
 def test_lex_error_2(capsys):
+    """非法字符错误提示测试"""
     lexer.lineno = 1
     lexer.input('step buhe \n &n')
 

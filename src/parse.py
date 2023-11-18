@@ -1,3 +1,4 @@
+"""语法分析模块"""
 import ply.yacc as yacc
 
 from lex import tokens, lexer
@@ -72,10 +73,14 @@ def p_exit(p):
     '''exit : EXIT'''
     p[0] = ('exit', True)
 
-# 错误处理
 def p_error(p):
+    """语法错误处理
+
+    Args:
+        p (production): 出现语法错误的产生式
+    """
     print(f"SyntaxError: lineno {p.lineno} lexpos {p.lexpos}")
     exit(1)
 
-# 构建语法分析器
 parser = yacc.yacc()
+"""yacc: 语法分析器对象"""
