@@ -1,0 +1,20 @@
+# .gitignore
+
+# vscode
+.vscode/
+
+# python
+__pycache__/
+
+# venv
+botvenv/
+
+# ply
+parser.out
+parsetab.py
+
+# pytest
+.pytest_cache/
+
+# sphinx
+doc/build/
