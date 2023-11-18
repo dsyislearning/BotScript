@@ -1,6 +1,6 @@
 # BotScript
 
-[English Version README](#_BotScript_(English_version))
+[English Version README](#en)
 
 本项目是 BUPT 2023 秋季学期《程序设计实践》选修课的课程项目。主要考察以下内容：
 
@@ -108,7 +108,7 @@ $name您好,请问有什么可以帮您?
 
 ---
 
-# BotScript (English version readme)
+<h1 id="en">BotScript (English version readme)</h1>
 
 This project is a course project of the *The Practice of Programming* elective course in BUPT's 2023 fall semester. Mainly examine the following contents:
 
